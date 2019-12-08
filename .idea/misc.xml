@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.5.2 virtualenv at ~/.virtualenvs/django_py3_1.11" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.6.7 (ssh://python@192.168.159.133:22/home/python/.virtualenvs/django_py3/bin/python3)" project-jdk-type="Python SDK" />
 </project>
