@@ -52,7 +52,9 @@ var vm = new Vue({
         generate_image_code: function () {
             // 生成一个编号 : 严格一点的使用uuid保证编号唯一， 不是很严谨的情况下，也可以使用时间戳
             this.image_code_id = this.generateUUID();
-            // 设置页面中图片验证码img标签的src属性
+            // 设置页面中图片验证码img标签的
+            //
+            // src属性
             this.image_code_url = this.host + "/image_codes/" + this.image_code_id + "/";
             console.log(this.image_code_url);
         },
