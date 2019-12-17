@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.contents',
     'apps.verifications',
+    'apps.oauth',
+    'apps.areas',
 
 ]
 
@@ -64,7 +66,8 @@ ROOT_URLCONF = 'meiduo_mall.urls'
 #             'context_processors': [
 #                 'django.template.context_processors.debug',
 #                 'django.template.context_processors.request',
-#                 'django.contrib.auth.context_processors.auth',
+#                 'd
+# jango.contrib.auth.context_processors.auth',
 #                 'django.contrib.messages.context_processors.messages',
 #             ],
 #         },
@@ -220,3 +223,21 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 #user
 AUTH_USER_MODEL = 'users.User'
+
+#自定义用户认证登录
+
+AUTHENTICATION_BACKENDS = [
+# 'django.contrib.auth.backends.ModelBackend' #默认配置
+'utils.users.UsernameModelBackend'
+]
+
+
+LOGIN_URL='/login/'
+
+
+#qq登录
+QQ_CLIENT_ID = '101518219'
+
+QQ_CLIENT_SECRET = '418d84ebdc7241efb79536886ae95224'
+
+QQ_REDIRECT_URI = 'http://www.meiduo.site:8000/oauth_callback'

@@ -7,8 +7,10 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views import View
 
+from utils.response_code import RETCODE
 from .models import User
-
+import logging
+logger = logging.getLogger('django')
 """
 需求分析
     post请求
@@ -49,13 +51,14 @@ class RegisterView(View):
             return HttpResponseBadRequest('请勾选用户协议')
 
         #保存数据
-        user = User.objects.create(username=username, password=password, mobile=mobile)
+        user = User.objects.create_user(username=username, password=password, mobile=mobile)
         #状态保持
         from django.contrib.auth import login
         login(requset, user)
         #返回响应
-        return redirect('/index.html')
-
+        response = redirect('/index.html')
+        response.set_cookie('username', user.username, max_age=24*3600*14)
+        return response
 #用户名是否重复
 class UsernameCountView(View):
 
@@ -64,3 +67,109 @@ class UsernameCountView(View):
         #查看用户的数量
         count = User.objects.filter(username=username).count()
         return JsonResponse({'code':'ok', 'errmsg':'ok', 'count':count})
+
+
+
+#用户登录
+class LoginView(View):
+
+
+    def get(self,request):
+
+        return render(request, 'login.html')
+
+    def post(self,request):
+
+
+        #获取用户
+        username = request.POST.get('username')
+        password = request.POST.get('pwd')
+        remembered = request.POST.get('remembered')
+        #验证字
+
+        if not all([username, password]):
+            return HttpResponseBadRequest('参数不全')
+        #django自带认证
+
+        from django.contrib.auth import authenticate
+
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            return HttpResponseBadRequest('用户名或密码错误')
+
+        #状态保持
+        from django.contrib.auth import login
+        login(request,user)
+        #是否保存用户名
+        if remembered != 'on':
+            request.session.set_expiry(0)
+        else:
+            request.session.set_expiry(None)
+
+        #返回响应
+        response = redirect('index.html')
+        #设置cookie
+        response.set_cookie('username',user.username, max_age=24*3600*14)
+
+        return response
+
+
+
+
+#个人中心页面
+class UserInfoView(View):
+
+
+    def get(self,requset):
+        #获取用户名 手机号 邮箱
+        data = {
+            'username':requset.user.username,
+            'mobile':requset.user.mobile,
+            'email':requset.user.email,
+            'email_active':requset.user.email_active
+        }
+        #返回响应
+
+
+        return render(requset, 'user_center_info.html', context=data)
+
+#添加邮箱
+class EmailView(View):
+    def put(self,request):
+
+        #获取邮箱
+
+        json_str = request.body.decode()
+        data = json.loads(json_str)
+        email = data.get('email')
+
+        #验证数据
+        if not email:
+            return HttpResponseBadRequest('请写入邮箱')
+        if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
+            return HttpResponseBadRequest('参数email有误')
+
+        try:
+            request.user.email=email
+            request.user.save()
+        except Exception as e:
+            logger.error(e)
+            return HttpResponseBadRequest('添加邮箱失败')
+        return JsonResponse({'code':RETCODE.OK, 'errmsg':'添加邮箱成功'})
+
+
+
+#收货地址
+class AddressView(View):
+    def get(self,request):
+        return render(request, 'user_center_site.html')
+
+
+
+
+
+
+
+
+
