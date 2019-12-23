@@ -35,9 +35,9 @@ var vm = new Vue({
         // 获取省份数据
         this.get_provinces();
         // 将用户地址列表绑定到变量, addresses 是django模板传给vue的json字符串
-        // this.addresses = JSON.parse(JSON.stringify(addresses));
+        this.addresses = JSON.parse(JSON.stringify(addresses));
         // 默认地址id
-        // this.default_address_id = default_address_id;
+        this.default_address_id = default_address_id;
     },
     watch: {
         // 监听到省份id变化
@@ -183,7 +183,7 @@ var vm = new Vue({
             this.add_title='修  改';
         },
         // 新增地址
-        save_address(){
+  save_address(){
             this.check_receiver();
             this.check_place();
             this.check_mobile();
@@ -206,11 +206,11 @@ var vm = new Vue({
                         responseType: 'json'
                     })
                         .then(response => {
-                            if (response.data.code == '0') {
-                                // location.reload();
-                                // 局部刷新界面：展示所有地址信息，将新的地址添加到头部
-                                this.addresses.splice(0, 0, response.data.address);
-                                this.is_show_edit = false;
+                           if (response.data.code == '0') {
+                            // 局部刷新界面：展示所有地址信息，将新的地址添加到头部
+                            this.addresses.splice(0, 0, response.data.address);
+                            this.is_show_edit = false;
+
                             } else if (response.data.code == '4101') {
                                 location.href = '/login/?next=/addresses/';
                             } else if (response.data.code == '4007') {
@@ -226,7 +226,7 @@ var vm = new Vue({
                         .catch(error => {
                             console.log(error.response);
                         });
-                } else {
+                }else {
                     // 修改地址
                     var url = this.host + '/addresses/' + this.addresses[this.editing_address_index].id + '/';
                     axios.put(url, this.form_address, {

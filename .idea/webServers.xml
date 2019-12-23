@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="8c2aed96-f3dd-4741-8bff-baf1c1b8a365" name="python" url="http://192.168.159.133">
-        <fileTransfer host="192.168.159.133" port="22" rootFolder="/home/python" accessType="SFTP">
+      <webServer id="8e9f5458-4f83-4d58-9314-b5a92b8f96af" name="python" url="http://192.168.159.134">
+        <fileTransfer host="192.168.159.134" port="22" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>

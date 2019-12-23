@@ -8,6 +8,13 @@ urlpatterns = [
     url(r'^login',views.LoginView.as_view(),name='login'),
     url(r'^userinfo',views.UserInfoView.as_view(),name='userinfo'),
     url(r'^emails',views.EmailView.as_view(),name='emails'),
-    url(r'^site',views.AddressView.as_view(),name='site'),
+    # url(r'^site',views.AddressView.as_view(),name='site'),
+
+    url(r'^addresses/create',views.NewAddressView.as_view(),name='create'),
+    url(r'^addresses/$',views.ShowAddressView.as_view(),name='show_addresses'),
+    url(r'^addresses/(?P<address_id>\d+)/$',views.UqdateAddressView.as_view(),name='uqdate_addresses'),
+    url(r'^addresses/(?P<address_id>\d+)/default/',views.DefAddressView.as_view(),name='def_addresses'),
+    url(r'^addresses/(?P<address_id>\d+)/title/',views.UpdateTitleView.as_view(),name='uqdate_title'),
+    url(r'^alterpassword/$',views.AlterPasswordView.as_view(),name='alter_password'),
 
 ]

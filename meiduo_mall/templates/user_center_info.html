@@ -20,7 +20,7 @@
 					欢迎您：<em>张 山</em>
 				</div>
 				<div class="login_btn fl">
-					<a href="">登录</a>
+					<a href="{{url('users:login')}}">登录</a>
 					<span>|</span>
 					<a href="{{url('users:register')}}">注册</a>
 				</div>
@@ -58,8 +58,8 @@
 			<ul>
 				<li><a href="{{url('users:userinfo')}}" class="active">· 个人信息</a></li>
 				<li><a href="../static/user_center_order.html">· 全部订单</a></li>
-				<li><a href="{{url('users:site')}}">· 收货地址</a></li>
-				<li><a href="../static/user_center_pass.html">· 修改密码</a></li>
+				<li><a href="{{url('users:show_addresses')}}">· 收货地址</a></li>
+				<li><a href="{{url('users:alter_password')}}">· 修改密码</a></li>
 			</ul>
 		</div>
 		<div class="right_content clearfix">
