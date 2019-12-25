@@ -7,7 +7,9 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.urls import reverse
 from django.views import View
+from django_redis import get_redis_connection
 
+from apps.goods.models import SKU
 from utils.response_code import RETCODE
 from .models import User, Address
 import logging
@@ -161,10 +163,6 @@ class EmailView(View):
 
 
 
-#收货地址
-# class AddressView(View):
-#     def get(self,request):
-#         return render(request, 'user_center_site.html')
 
 
 
@@ -448,6 +446,60 @@ class AlterPasswordView(View):
         response = redirect(reverse('users:login'))
         response.delete_cookie('username')
         return response
+
+
+
+
+#用户游览记录
+class UserBrowseHistory(View):
+
+
+    def post(self,request):
+        #获取数据
+        data_str = request.body.decode()
+        data = json.loads(data_str)
+        sku_id = data.get('sku_id')
+
+        try:
+            SKU.objects.get(id=sku_id)
+        except SKU.DoesNotExist:
+            return HttpResponseBadRequest('sku商品不存在')
+        #连接redis
+        conn_redis = get_redis_connection('history')
+        user_id = request.user.id
+
+        #创建管道实例
+        pipeline = conn_redis.pipeline()
+        #移除
+        pipeline.lrem('history_%s' %request.user.id, 0,sku_id)
+        #从左添加
+        pipeline.lpush('history_%s' %request.user.id, sku_id)
+        #只保存5个数据
+        pipeline.ltrim('history_%s' %request.user.id, 0, 4)
+        pipeline.execute()
+        return JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
+    def get(self,request):
+
+        #读取数据
+        conn_redis = get_redis_connection('history')
+        sku_ids = conn_redis.lrange('history_%s' %request.user.id,0, -1)
+
+        sku_list = []
+        for sku_id in sku_ids:
+            sku = SKU.objects.get(id=sku_id)
+            sku_list.append({
+                'id': sku.id,
+                'name': sku.name,
+                'default_image_url': sku.default_image.url,
+                'price': sku.price
+            })
+
+
+
+
+        return JsonResponse({'code':RETCODE.OK, 'errmsg':'OK','skus':sku_list})
+
+
 
 
 

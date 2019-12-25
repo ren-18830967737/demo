@@ -25,8 +25,7 @@ SECRET_KEY = '^q4w%f*=6ot%d=ydv-6-j)^&*iwjx$$#or85keb$8z!u1#0o^='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.159.134'
-                 '', 'www.meiduo.site', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.12.22', 'www.meiduo.site','127.0.0.1']
 
 
 # Application definition
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     'apps.verifications',
     'apps.oauth',
     'apps.areas',
+    'apps.goods',
 
 ]
 
@@ -113,7 +113,7 @@ DATABASES = {
         'PORT': 3306, # 数据库端口
         'USER': 'root', # 数据库用户名
         'PASSWORD': 'mysql', # 数据库用户密码
-        'NAME': 'meiduo_db' # 数据库名字
+        'NAME': 'meiduo' # 数据库名字
     },
 }
 
@@ -139,7 +139,16 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
+
+    "history": { # 用户浏览记录
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
 }
+
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
 

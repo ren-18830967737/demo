@@ -32,22 +32,23 @@ class AddressView(View):
 
         #判断    parent_id不存在就是查找省的信息
         if parent_id is None:
-            #设置缓存
-            cache_pro = cache.get('cache_pro')
-            if cache_pro is None:
+            #获取缓存
+            cache_pro_list = cache.get('cache_pro')
+
+            if cache_pro_list is None:
                 proviences  =Area.objects.filter(parent=None)
-                cache_pro=[]
+                cache_pro_list=[]
                 #将对象转换成字典形式
                 for pro in proviences:
-                    cache_pro.append({
+                    cache_pro_list.append({
                         'id':pro.id,
                         'name':pro.name
 
                     })
                 #设置缓存
-                cache.set('cache_pro', cache_pro, 24*3600*14)
+                cache.set('cache_pro', cache_pro_list, 2)
 
-            return JsonResponse({'code':RETCODE.OK,'province_list':cache_pro})
+            return JsonResponse({'code':RETCODE.OK,'province_list':cache_pro_list})
 
         # parent_id存在就是查找市的信息
         else:
